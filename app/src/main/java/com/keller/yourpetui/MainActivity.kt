@@ -3,11 +3,13 @@ package com.keller.yourpetui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.keller.yourpetui.model.Pet
 import com.keller.yourpetui.ui.YourPetUITheme
 
 class MainActivity : AppCompatActivity() {
@@ -17,7 +19,7 @@ class MainActivity : AppCompatActivity() {
             YourPetUITheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                    Content(listOf(Pet("Suso"), Pet("Bella")))
                 }
             }
         }
@@ -25,14 +27,15 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+fun Pet(pet: Pet) = Text(pet.name)
+
+@Composable
+private fun Content(pets: List<Pet>) = Column { pets.forEach { Pet(it) } }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     YourPetUITheme {
-        Greeting("Android")
+        Content(listOf(Pet("Suso"), Pet("Bella")))
     }
 }
