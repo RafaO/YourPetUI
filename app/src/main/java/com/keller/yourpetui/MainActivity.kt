@@ -3,7 +3,7 @@ package com.keller.yourpetui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -30,7 +30,12 @@ class MainActivity : AppCompatActivity() {
 fun Pet(pet: Pet) = Text(pet.name)
 
 @Composable
-private fun Content(pets: List<Pet>) = Column { pets.forEach { Pet(it) } }
+private fun Content(pets: List<Pet>) = LazyColumn {
+    items(
+        count = pets.size,
+        itemContent = { Pet(pets[it]) },
+    )
+}
 
 @Preview(showBackground = true)
 @Composable
