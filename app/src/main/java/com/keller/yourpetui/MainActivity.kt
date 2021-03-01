@@ -1,8 +1,10 @@
 package com.keller.yourpetui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,7 +31,13 @@ class MainActivity : AppCompatActivity() {
             YourPetUITheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Content(getPets())
+                    Content(getPets()) {
+                        Toast.makeText(
+                            this,
+                            "clicked ${it.name}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }
@@ -42,7 +50,8 @@ private fun getPets() = listOf(
 )
 
 @Composable
-fun Pet(pet: Pet) = Column(modifier = Modifier.padding(16.dp)) {
+fun Pet(pet: Pet, onPetClicked: (Pet) -> Unit) = Column(
+    modifier = Modifier.padding(16.dp).clickable { onPetClicked(pet) }) {
     GlideImage(
         data = pet.imageUrl,
         contentDescription = "image for $pet.name",
@@ -57,19 +66,19 @@ fun Pet(pet: Pet) = Column(modifier = Modifier.padding(16.dp)) {
 
 
 @Composable
-private fun Content(pets: List<Pet>) = Column {
+private fun Content(pets: List<Pet>, onPetClicked: (Pet) -> Unit) = Column {
     Text(
         "Pets in adoption",
         style = MaterialTheme.typography.h1
     )
-    PetsList(pets)
+    PetsList(pets, onPetClicked)
 }
 
 @Composable
-private fun PetsList(pets: List<Pet>) = LazyColumn {
+private fun PetsList(pets: List<Pet>, onPetClicked: (Pet) -> Unit) = LazyColumn {
     items(
         count = pets.size,
-        itemContent = { Pet(pets[it]) },
+        itemContent = { Pet(pets[it], onPetClicked) },
     )
 }
 
@@ -77,6 +86,6 @@ private fun PetsList(pets: List<Pet>) = LazyColumn {
 @Composable
 fun DefaultPreview() {
     YourPetUITheme {
-        Content(getPets())
+        Content(getPets()) {}
     }
 }
