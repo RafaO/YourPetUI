@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -66,8 +65,8 @@ fun ComposeNavigation() {
 }
 
 private fun getPets() = listOf(
-    Pet("Suso", "https://picsum.photos/id/237/200/300"),
-    Pet("Bella", "https://picsum.photos/id/237/200/300")
+    Pet("Suso", "https://picsum.photos/id/237/200/150"),
+    Pet("Bella", "https://picsum.photos/id/1025/200/150")
 )
 
 @Composable
@@ -77,7 +76,6 @@ fun Pet(pet: Pet, onPetClicked: (Pet) -> Unit) = Column(
         data = pet.imageUrl,
         contentDescription = "image for $pet.name",
         modifier = Modifier
-            .height(180.dp)
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(12.dp)),
         contentScale = ContentScale.Crop
