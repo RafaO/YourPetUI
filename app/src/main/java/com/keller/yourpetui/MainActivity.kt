@@ -19,10 +19,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigate
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavType
+import androidx.navigation.compose.*
 import com.keller.yourpetui.model.Pet
 import com.keller.yourpetui.ui.YourPetUITheme
 import dev.chrisbanes.accompanist.glide.GlideImage
@@ -42,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun Detail() = Text("Detail")
+fun Detail(petId: String) = Text("Detail for $petId")
 
 @Composable
 fun ComposeNavigation() {
@@ -52,10 +50,13 @@ fun ComposeNavigation() {
         startDestination = "pets_list"
     ) {
         composable("pets_list") {
-            Content(getPets()) { navController.navigate("detail") }
+            Content(getPets()) { navController.navigate("detail/${it.name}") }
         }
-        composable("detail") {
-            Detail()
+        composable(
+            "detail/{petId}",
+            arguments = listOf(navArgument("petId") { type = NavType.StringType })
+        ) {
+            Detail(it.arguments?.getString("petId")!!)
         }
     }
 }
