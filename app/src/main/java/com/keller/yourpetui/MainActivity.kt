@@ -19,8 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavType
-import androidx.navigation.compose.*
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.keller.yourpetui.model.Pet
 import com.keller.yourpetui.ui.YourPetUITheme
 import dev.chrisbanes.accompanist.glide.GlideImage
@@ -40,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun Detail(petId: String) = Text("Detail for $petId")
+fun Detail(pet: Pet) = Text("Detail for ${pet.name}")
 
 @Composable
 fun ComposeNavigation() {
@@ -50,13 +52,15 @@ fun ComposeNavigation() {
         startDestination = "pets_list"
     ) {
         composable("pets_list") {
-            Content(getPets()) { navController.navigate("detail/${it.name}") }
+            Content(getPets()) {
+                navController.currentBackStackEntry?.arguments?.putSerializable("pet", it)
+                navController.navigate("detail")
+            }
         }
-        composable(
-            "detail/{petId}",
-            arguments = listOf(navArgument("petId") { type = NavType.StringType })
-        ) {
-            Detail(it.arguments?.getString("petId")!!)
+        composable("detail") {
+            val pet = navController
+                .previousBackStackEntry?.arguments?.getSerializable("pet") as Pet
+            Detail(pet)
         }
     }
 }
@@ -84,7 +88,6 @@ fun Pet(pet: Pet, onPetClicked: (Pet) -> Unit) = Column(
 
 @Composable
 private fun Content(pets: List<Pet>, onPetClicked: (Pet) -> Unit) = Column {
-    val navController = rememberNavController()
     Text(
         "Pets in adoption",
         style = MaterialTheme.typography.h1
