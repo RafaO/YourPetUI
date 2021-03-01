@@ -3,18 +3,20 @@ package com.keller.yourpetui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,7 +43,26 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun Detail(pet: Pet) = Text("Detail for ${pet.name}")
+fun Detail(pet: Pet) = Column(Modifier.padding(16.dp)) {
+    Box(Modifier.height(150.dp)) {
+        GlideImage(
+            data = pet.imageUrl,
+            contentDescription = "image for $pet.name",
+            contentScale = ContentScale.Crop
+        )
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
+        )
+        Text(
+            modifier = Modifier.align(Alignment.BottomStart),
+            text = pet.name,
+            style = MaterialTheme.typography.h1.copy(color = MaterialTheme.colors.onPrimary)
+        )
+    }
+    Text(pet.description, style = MaterialTheme.typography.body1)
+}
 
 @Composable
 fun ComposeNavigation() {
@@ -65,8 +86,16 @@ fun ComposeNavigation() {
 }
 
 private fun getPets() = listOf(
-    Pet("Suso", "https://picsum.photos/id/237/200/150"),
-    Pet("Bella", "https://picsum.photos/id/1025/200/150")
+    Pet(
+        "Suso",
+        "Suso is a wonderful dog with a very sweet character",
+        "https://picsum.photos/id/237/200/150"
+    ),
+    Pet(
+        "Bella",
+        "Bella is a old lady that is looking for a family who can give her a loving home",
+        "https://picsum.photos/id/1025/200/150"
+    )
 )
 
 @Composable
