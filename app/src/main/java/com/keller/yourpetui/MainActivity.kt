@@ -1,7 +1,6 @@
 package com.keller.yourpetui
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -20,6 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigate
+import androidx.navigation.compose.rememberNavController
 import com.keller.yourpetui.model.Pet
 import com.keller.yourpetui.ui.YourPetUITheme
 import dev.chrisbanes.accompanist.glide.GlideImage
@@ -31,15 +34,28 @@ class MainActivity : AppCompatActivity() {
             YourPetUITheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
-                    Content(getPets()) {
-                        Toast.makeText(
-                            this,
-                            "clicked ${it.name}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    ComposeNavigation()
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun Detail() = Text("Detail")
+
+@Composable
+fun ComposeNavigation() {
+    val navController = rememberNavController()
+    NavHost(
+        navController = navController,
+        startDestination = "pets_list"
+    ) {
+        composable("pets_list") {
+            Content(getPets()) { navController.navigate("detail") }
+        }
+        composable("detail") {
+            Detail()
         }
     }
 }
@@ -67,6 +83,7 @@ fun Pet(pet: Pet, onPetClicked: (Pet) -> Unit) = Column(
 
 @Composable
 private fun Content(pets: List<Pet>, onPetClicked: (Pet) -> Unit) = Column {
+    val navController = rememberNavController()
     Text(
         "Pets in adoption",
         style = MaterialTheme.typography.h1
