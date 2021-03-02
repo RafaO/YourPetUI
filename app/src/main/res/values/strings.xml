@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">YourPetUI</string>
     <string name="title_pets_list">Pets in adoption</string>
+    <string name="button_contact_me">Contact me</string>
+    <string name="toast_contact">You have contacted %1$s</string>
 </resources>

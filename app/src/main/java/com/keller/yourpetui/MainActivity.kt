@@ -1,5 +1,6 @@
 package com.keller.yourpetui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -24,14 +25,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             YourPetUITheme {
-                Surface(color = MaterialTheme.colors.background) { ComposeNavigation() }
+                Surface(color = MaterialTheme.colors.background) { ComposeNavigation(this) }
             }
         }
     }
 }
 
 @Composable
-fun ComposeNavigation() {
+fun ComposeNavigation(context: Context) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = ROUTE_PETS_LIST) {
         composable(ROUTE_PETS_LIST) {
@@ -43,7 +44,7 @@ fun ComposeNavigation() {
         composable(ROUTE_PET_DETAILS) {
             val pet = navController
                 .previousBackStackEntry?.arguments?.getSerializable(ARG_PET) as Pet
-            PetDetailScreen(pet)
+            PetDetailScreen(context, pet)
         }
     }
 }
