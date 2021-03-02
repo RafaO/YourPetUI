@@ -20,9 +20,11 @@ import com.keller.yourpetui.model.Pet
 import dev.chrisbanes.accompanist.glide.GlideImage
 
 @Composable
-fun PetDetailScreen(context: Context, pet: Pet) = Column(Modifier.padding(16.dp)) {
-    Header(pet)
-    Text(pet.description, style = MaterialTheme.typography.body1)
+fun PetDetailScreen(context: Context, pet: Pet) = Column(Modifier.padding(16.dp).fillMaxHeight()) {
+    Column(Modifier.weight(1f)) {
+        Header(pet)
+        Text(pet.description, style = MaterialTheme.typography.body1)
+    }
     Button(
         onClick = {
             Toast.makeText(
