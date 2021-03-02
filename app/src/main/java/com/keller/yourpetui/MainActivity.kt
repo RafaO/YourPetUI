@@ -3,84 +3,47 @@ package com.keller.yourpetui
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigate
 import androidx.navigation.compose.rememberNavController
+import com.keller.yourpetui.Navigation.Companion.ARG_PET
+import com.keller.yourpetui.Navigation.Companion.ROUTE_PETS_LIST
+import com.keller.yourpetui.Navigation.Companion.ROUTE_PET_DETAILS
 import com.keller.yourpetui.model.Pet
+import com.keller.yourpetui.petdetails.PetDetailScreen
+import com.keller.yourpetui.petlist.PetsListScreen
 import com.keller.yourpetui.ui.YourPetUITheme
-import dev.chrisbanes.accompanist.glide.GlideImage
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             YourPetUITheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    ComposeNavigation()
-                }
+                Surface(color = MaterialTheme.colors.background) { ComposeNavigation() }
             }
         }
     }
-}
-
-@Composable
-fun Detail(pet: Pet) = Column(Modifier.padding(16.dp)) {
-    Box(Modifier.height(150.dp)) {
-        GlideImage(
-            data = pet.imageUrl,
-            contentDescription = "image for $pet.name",
-            contentScale = ContentScale.Crop
-        )
-        Box(
-            Modifier
-                .fillMaxSize()
-                .background(Brush.verticalGradient(listOf(Color.Transparent, Color.Black)))
-        )
-        Text(
-            modifier = Modifier.align(Alignment.BottomStart),
-            text = pet.name,
-            style = MaterialTheme.typography.h1.copy(color = MaterialTheme.colors.onPrimary)
-        )
-    }
-    Text(pet.description, style = MaterialTheme.typography.body1)
 }
 
 @Composable
 fun ComposeNavigation() {
     val navController = rememberNavController()
-    NavHost(
-        navController = navController,
-        startDestination = "pets_list"
-    ) {
-        composable("pets_list") {
-            Content(getPets()) {
-                navController.currentBackStackEntry?.arguments?.putSerializable("pet", it)
-                navController.navigate("detail")
+    NavHost(navController = navController, startDestination = ROUTE_PETS_LIST) {
+        composable(ROUTE_PETS_LIST) {
+            PetsListScreen(getPets()) {
+                navController.currentBackStackEntry?.arguments?.putSerializable(ARG_PET, it)
+                navController.navigate(ROUTE_PET_DETAILS)
             }
         }
-        composable("detail") {
+        composable(ROUTE_PET_DETAILS) {
             val pet = navController
-                .previousBackStackEntry?.arguments?.getSerializable("pet") as Pet
-            Detail(pet)
+                .previousBackStackEntry?.arguments?.getSerializable(ARG_PET) as Pet
+            PetDetailScreen(pet)
         }
     }
 }
@@ -98,42 +61,10 @@ private fun getPets() = listOf(
     )
 )
 
-@Composable
-fun Pet(pet: Pet, onPetClicked: (Pet) -> Unit) = Column(
-    modifier = Modifier.padding(16.dp).clickable { onPetClicked(pet) }) {
-    GlideImage(
-        data = pet.imageUrl,
-        contentDescription = "image for $pet.name",
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(12.dp)),
-        contentScale = ContentScale.Crop
-    )
-    Text(pet.name, style = MaterialTheme.typography.h6)
-}
-
-
-@Composable
-private fun Content(pets: List<Pet>, onPetClicked: (Pet) -> Unit) = Column {
-    Text(
-        "Pets in adoption",
-        style = MaterialTheme.typography.h1
-    )
-    PetsList(pets, onPetClicked)
-}
-
-@Composable
-private fun PetsList(pets: List<Pet>, onPetClicked: (Pet) -> Unit) = LazyColumn {
-    items(
-        count = pets.size,
-        itemContent = { Pet(pets[it], onPetClicked) },
-    )
-}
-
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     YourPetUITheme {
-        Content(getPets()) {}
+        PetsListScreen(getPets()) {}
     }
 }
