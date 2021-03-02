@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">YourPetUI</string>
+    <string name="title_pets_list">Pets in adoption</string>
 </resources>
